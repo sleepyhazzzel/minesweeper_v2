@@ -21,7 +21,8 @@ const {
   changeDifficulty,
   clickCell,
   toggleFlag,
-  start
+  start,
+  firstClick
 } = useGame(Difficulty.Easy)
 
 // 計算屬性
@@ -40,8 +41,9 @@ const handleChangeDifficulty = (newDifficulty: Difficulty) => {
 }
 
 // 處理格子點擊
-const handleCellClick = (row: number, col: number) => {
-  clickCell(row, col)
+const handleCellClick = async (row: number, col: number) => {
+  if (status.value === GameStatus.Idle) firstClick(row, col)
+  else clickCell(row, col)
 }
 
 // 處理格子右鍵
@@ -51,45 +53,20 @@ const handleCellRightClick = (row: number, col: number) => {
 
 // 顯示遊戲說明
 const showInfo = () => {
-  alert(`🎮 扫雷游戏说明
+  alert(`🎮 踩地雷遊戲說明
 
-📌 游戏规则：
-• 左键点击格子，打开格子
-• 右键点击格子，插/拔旗子
-• 数字表示周围8格的炸弹数量
-• 标记所有炸弹或打开所有安全格子即可获胜
+📌 遊戲規則：
+• 左鍵點擊格子，打開格子
+• 右鍵點擊格子，插/拔旗子
+• 數字表示周圍8格的炸彈數量
+• 標記所有炸彈或打開所有安全格子即可獲勝
 
-⭐ 难度等级：
-• 简单：10x10，10个炸弹
-• 中等：14x16，30个炸弹
-• 困难：18x22，70个炸弹
+⭐ 難度等級：
+• 簡單：10x10，10個炸彈
+• 中等：14x16，30個炸彈
+• 困難：18x22，70個炸彈
 
 祝你遊戲愉快！🎉`)
-}
-
-// 遊戲狀態變化處理
-const handleGameOver = () => {
-  setTimeout(() => {
-    if (isWon.value) {
-      const playAgain = confirm(`🎉 恭喜获胜！\n用时：${timeDigits.value.join('')}秒\n\n是否再来一局？`)
-      if (playAgain) {
-        restart()
-      }
-    } else if (isLost.value) {
-      const playAgain = confirm(`💥 很遗憾，踩到地雷了！\n\n是否再来一局？`)
-      if (playAgain) {
-        restart()
-      }
-    }
-  }, 300)
-}
-
-// 监听游戏状态
-const prevStatus = computed(() => status.value)
-const checkGameOver = () => {
-  if (isGameOver.value && prevStatus.value !== GameStatus.Idle) {
-    handleGameOver()
-  }
 }
 
 // 首次啟動遊戲
@@ -98,9 +75,7 @@ start()
 
 <template>
   <div class="app">
-    <div class="game-container">
-      <h1 class="title">💣 扫雷游戏</h1>
-      
+    <div class="game-container">      
       <GameHeader
         :difficulty="difficulty"
         :time-digits="timeDigits"
@@ -118,15 +93,14 @@ start()
         :disabled="isGameOver"
         @cell-click="handleCellClick"
         @cell-right-click="handleCellRightClick"
-        @vue:updated="checkGameOver"
       />
 
       <div v-if="isGameOver" class="game-overlay">
         <div class="game-result">
-          <h2 v-if="isWon">🎉 恭喜获胜！</h2>
-          <h2 v-else-if="isLost">💥 游戏失败</h2>
-          <p v-if="isWon">用时：{{ timeDigits.join('') }}秒</p>
-          <button @click="handleRestart" class="btn-restart">再来一局</button>
+          <h2 v-if="isWon">🎉 恭喜獲勝！</h2>
+          <h2 v-else-if="isLost">💥 遊戲失敗</h2>
+          <p v-if="isWon">用時：{{ timeDigits.join('') }}秒</p>
+          <button @click="handleRestart" class="btn-restart">再來一局</button>
         </div>
       </div>
     </div>
@@ -150,17 +124,6 @@ start()
   border-radius: 4px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   background-color: #ccc;
-}
-
-.title {
-  text-align: center;
-  padding: 16px;
-  margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-size: 28px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  border-bottom: 4px solid #999;
 }
 
 .game-overlay {

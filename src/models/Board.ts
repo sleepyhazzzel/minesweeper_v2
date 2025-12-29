@@ -55,14 +55,17 @@ export class Board {
 
   /**
    * 生成炸彈
+   * @param row 玩家第一次點擊的行
+   * @param col 玩家第一次點擊的列
    */
-  generateBombs(): void {
+  generateBombs(click_row: number, click_col: number): void {
     this._bombPositions.clear()
     
     // 隨機生成炸彈位置
     while (this._bombPositions.size < this._bombsCount) {
       const row = Math.floor(Math.random() * this._rows)
       const col = Math.floor(Math.random() * this._cols)
+      if (row === click_row && col === click_col) continue
       const key = `${row},${col}`
       this._bombPositions.add(key)
     }

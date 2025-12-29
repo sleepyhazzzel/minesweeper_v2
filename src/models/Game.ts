@@ -69,10 +69,10 @@ export class Game {
    */
   start(): void {
     this._board.reset()
-    this._board.generateBombs()
+    // this._board.generateBombs()
     this._timer.reset()
-    this._timer.start()
-    this._status = GameStatus.Playing
+    // this._timer.start()
+    this._status = GameStatus.Idle
     
     if (this._onStatusChange) {
       this._onStatusChange(this._status)
@@ -80,6 +80,22 @@ export class Game {
     if (this._onBoardUpdate) {
       this._onBoardUpdate()
     }
+  }
+
+  /**
+   * 點擊第一個cell時開始計時，生成炸彈，避免第一步就選到炸彈
+   */
+  firstClick(row: number, col: number): void {
+    this._board.generateBombs(row, col)
+    this._timer.start()
+    this._status = GameStatus.Playing
+    
+    if (this._onStatusChange) {
+      this._onStatusChange(this._status)
+    }
+
+    // 進行第一次點擊
+    this.clickCell(row, col)
   }
 
   /**

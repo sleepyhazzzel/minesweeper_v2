@@ -1,16 +1,16 @@
 <template>
   <div class="game-header">
     <div class="header-section">
-      <button class="btn-icon" @click="$emit('info')" title="游戏说明">
+      <button class="btn-icon" @click="$emit('info')" title="遊戲說明">
         ❓
       </button>
-      <button class="btn-icon" @click="$emit('restart')" title="重新开始">
+      <button class="btn-icon" @click="$emit('restart')" title="重新開始">
         🔄
       </button>
     </div>
 
     <div class="header-section record">
-      <span>最佳记录 ({{ difficulty }})：</span>
+      <span>最佳紀錄 ({{ difficulty }})：</span>
       <span class="record-time">{{ recordDisplay }}</span>
     </div>
   </div>
@@ -26,9 +26,9 @@
 
     <div class="difficulty-select">
       <select :value="difficulty" @change="handleDifficultyChange">
-        <option value="Easy">简单 ★</option>
+        <option value="Easy">簡單 ★</option>
         <option value="Normal">中等 ★★</option>
-        <option value="Difficult">困难 ★★★</option>
+        <option value="Difficult">困難 ★★★</option>
       </select>
     </div>
 

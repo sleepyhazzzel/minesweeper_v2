@@ -68,6 +68,10 @@ export function useGame(initialDifficulty: Difficulty = Difficulty.Easy) {
     game.value?.start()
   }
 
+  const firstClick = (row: number, col: number) => {
+    game.value?.firstClick(row, col)
+  }
+
   const restart = () => {
     game.value?.restart()
   }
@@ -104,6 +108,7 @@ export function useGame(initialDifficulty: Difficulty = Difficulty.Easy) {
 
     // 方法
     start,
+    firstClick,
     restart,
     changeDifficulty,
     clickCell,

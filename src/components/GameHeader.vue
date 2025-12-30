@@ -18,25 +18,21 @@
   <div class="game-controls">
     <div class="display">
       <div class="digit-display">
-        <span v-for="(digit, index) in flagsDigits" :key="`flag-${index}`" class="digit">
-          {{ digit }}
-        </span>
+        <span v-for="(digit, index) in flagsDigits" :key="`flag-${index}`" :class="`digit-${digit}`" />
       </div>
     </div>
 
     <div class="difficulty-select">
       <select :value="difficulty" @change="handleDifficultyChange">
-        <option value="Easy">簡單 ★</option>
-        <option value="Normal">中等 ★★</option>
-        <option value="Difficult">困難 ★★★</option>
+        <option value="Easy">Easy ★</option>
+        <option value="Normal">Normal ★★</option>
+        <option value="Difficult">Difficult ★★★</option>
       </select>
     </div>
 
     <div class="display">
       <div class="digit-display">
-        <span v-for="(digit, index) in timeDigits" :key="`time-${index}`" class="digit">
-          {{ digit }}
-        </span>
+        <span v-for="(digit, index) in timeDigits" :key="`time-${index}`" :class="`digit-${digit}`" />
       </div>
     </div>
   </div>
@@ -70,7 +66,7 @@ const handleDifficultyChange = (event: Event) => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .game-header {
   padding: 8px;
   background-color: #ccc;
@@ -141,18 +137,15 @@ const handleDifficultyChange = (event: Event) => {
   gap: 2px;
 }
 
-.digit {
-  width: 20px;
-  height: 28px;
-  background-color: #000;
-  color: #ff0000;
-  font-family: 'Courier New', monospace;
-  font-size: 24px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 0 2px #ff0000;
+@for $i from 0 through 9 {
+  .digit-#{$i} {
+    width:  20px;
+    height: 36px;
+    background-image: url("../assets/img/num-#{$i}.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }
 
 .difficulty-select select {

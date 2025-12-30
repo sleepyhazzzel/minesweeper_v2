@@ -1,15 +1,14 @@
 <template>
   <div class="cell" 
-       :class="cellClasses"
-       @click.left="handleClick"
-       @click.right.prevent="handleRightClick"
-       @contextmenu.prevent>
-    <span v-if="isRevealed && !isBomb && adjacentBombs > 0" 
-          :class="`num-${adjacentBombs}`">
-      {{ adjacentBombs }}
-    </span>
-    <span v-if="isBomb && isRevealed" class="bomb-icon">💣</span>
-    <span v-if="isFlagged" class="flag-icon">🚩</span>
+    :class="cellClasses"
+    @click.left="handleClick"
+    @click.right.prevent="handleRightClick"
+    @contextmenu.prevent
+  >
+    <div v-if="isRevealed && !isBomb && adjacentBombs > 0" :class="`num-${adjacentBombs}`" />
+    <div v-if="isBomb && isRevealed" class="bomb-icon" />
+    <div v-if="props.disabled && isFlagged && !isBomb" class="not-bomb-icon" />
+    <div v-else-if="isFlagged" class="flag-icon" />
   </div>
 </template>
 
@@ -54,7 +53,7 @@ const handleRightClick = () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .cell {
   width: 32px;
   height: 32px;
@@ -93,19 +92,25 @@ const handleRightClick = () => {
   opacity: 0.6;
 }
 
-/* 数字颜色 */
-.num-1 { color: #0000ff; }
-.num-2 { color: #008000; }
-.num-3 { color: #ff0000; }
-.num-4 { color: #000080; }
-.num-5 { color: #800000; }
-.num-6 { color: #008080; }
-.num-7 { color: #000000; }
-.num-8 { color: #808080; }
+@for $i from 1 through 8 {
+  .num-#{$i} {
+    width: 32px;
+    height: 32px;
+    background-image: url("../assets/img/0#{$i}.png");
+  }
+}
 
-.bomb-icon,
-.flag-icon {
-  font-size: 18px;
-  line-height: 1;
+$classes: bomb, not-bomb, flag;
+@each $class in $classes {
+  .#{$class}-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    line-height: 1;
+    background-image: url("../assets/img/#{$class}.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }
 </style>

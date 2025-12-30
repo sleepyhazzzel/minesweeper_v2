@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import GameHeader from './components/GameHeader.vue'
 import GameBoard from './components/GameBoard.vue'
 import { useGame } from './composables/useGame'
@@ -24,6 +24,26 @@ const {
   start,
   firstClick
 } = useGame(Difficulty.Easy)
+
+// 延遲顯示遊戲結果
+const showResult = ref(false)
+let resultTimer: number | null = null
+
+watch(isGameOver, (newVal) => {
+  if (newVal) {
+    // 遊戲結束時，3 秒後顯示結果
+    resultTimer = window.setTimeout(() => {
+      showResult.value = true
+    }, 2500)
+  } else {
+    // 重新開始時立即隱藏結果
+    if (resultTimer) {
+      clearTimeout(resultTimer)
+      resultTimer = null
+    }
+    showResult.value = false
+  }
+})
 
 // 計算屬性
 const cellsData = computed(() => cells.value.map(cell => cell.toData()))
@@ -95,7 +115,7 @@ start()
         @cell-right-click="handleCellRightClick"
       />
 
-      <div v-if="isGameOver" class="game-overlay">
+      <div v-if="showResult" class="game-overlay">
         <div class="game-result">
           <h2 v-if="isWon">🎉 恭喜獲勝！</h2>
           <h2 v-else-if="isLost">💥 遊戲失敗</h2>
@@ -121,7 +141,6 @@ start()
 .game-container {
   position: relative;
   border: 10px solid #999;
-  border-radius: 4px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   background-color: #ccc;
 }

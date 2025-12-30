@@ -18,7 +18,6 @@ export class Cell {
     this._adjacentBombs = 0
   }
 
-  // 取值器
   get row(): number {
     return this._row
   }

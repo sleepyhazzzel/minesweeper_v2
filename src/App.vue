@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import GameHeader from './components/GameHeader.vue'
 import GameBoard from './components/GameBoard.vue'
 import { useGame } from './composables/useGame'
@@ -24,26 +24,6 @@ const {
   start,
   firstClick
 } = useGame(Difficulty.Easy)
-
-// 延遲顯示遊戲結果
-const showResult = ref(false)
-let resultTimer: number | null = null
-
-watch(isGameOver, (newVal) => {
-  if (newVal) {
-    // 遊戲結束時，3 秒後顯示結果
-    resultTimer = window.setTimeout(() => {
-      showResult.value = true
-    }, 2500)
-  } else {
-    // 重新開始時立即隱藏結果
-    if (resultTimer) {
-      clearTimeout(resultTimer)
-      resultTimer = null
-    }
-    showResult.value = false
-  }
-})
 
 // 計算屬性
 const cellsData = computed(() => cells.value.map(cell => cell.toData()))
@@ -95,7 +75,7 @@ start()
 
 <template>
   <div class="app">
-    <div class="game-container">      
+    <div class="game-container" :class="{ 'game-container--shifted': isGameOver }">      
       <GameHeader
         :difficulty="difficulty"
         :time-digits="timeDigits"
@@ -114,15 +94,12 @@ start()
         @cell-click="handleCellClick"
         @cell-right-click="handleCellRightClick"
       />
-
-      <div v-if="showResult" class="game-overlay">
-        <div class="game-result">
-          <h2 v-if="isWon">🎉 恭喜獲勝！</h2>
-          <h2 v-else-if="isLost">💥 遊戲失敗</h2>
-          <p v-if="isWon">用時：{{ timeDigits.join('') }}秒</p>
-          <button @click="handleRestart" class="btn-restart">再來一局</button>
-        </div>
-      </div>
+    </div>
+    <div v-if="isGameOver" class="game-result">
+      <h2 v-if="isWon">🎉 恭喜獲勝！</h2>
+      <h2 v-else-if="isLost">💥 遊戲失敗</h2>
+      <p v-if="isWon">用時：{{ timeDigits.join('') }}秒</p>
+      <button @click="handleRestart" class="btn-restart">再來一局</button>
     </div>
   </div>
 </template>
@@ -134,6 +111,7 @@ start()
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 40px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 20px;
 }
@@ -143,29 +121,11 @@ start()
   border: 10px solid #999;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   background-color: #ccc;
+  transition: transform 1s ease;
 }
 
-.game-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.game-container--shifted {
+  transform: translateX(-20px);
 }
 
 .game-result {
@@ -174,15 +134,17 @@ start()
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  animation: scaleIn 0.3s ease;
+  animation: moveIn 1s ease;
 }
 
-@keyframes scaleIn {
+@keyframes moveIn {
   from {
-    transform: scale(0.8);
+    transform: translateX(20px);
+    opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 

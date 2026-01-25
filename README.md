@@ -2,6 +2,8 @@
 
 > 使用 Vue 3 + TypeScript + OOP 重構的現代化踩地雷遊戲
 
+**遊戲連結**: [Minesweeper_ver.2](https://sleepyhazzzel.github.io/minesweeper_v2/)
+
 ## 🎮 專案簡介
 
 這是一個使用 **物件導向程式設計 (OOP)** 方式重構的踩地雷遊戲，從原來的 jQuery + 函數式程式設計重構為 Vue 3 + TypeScript 的現代化架構。
